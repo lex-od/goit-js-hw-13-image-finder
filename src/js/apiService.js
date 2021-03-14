@@ -8,6 +8,10 @@ export default {
 
         const response = await fetch(url);
 
+        if (!response.ok) {
+            throw new Error('request was rejected by server');
+        }
+
         return await response.json();
     },
 };
