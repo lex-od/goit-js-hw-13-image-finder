@@ -4,6 +4,7 @@ import apiServ from './js/apiService';
 
 const refs = {
     searchForm: document.querySelector('#search-form'),
+    galleryList: document.querySelector('#gallery-list'),
 };
 
 refs.searchForm.addEventListener('submit', onSearch);
@@ -17,9 +18,17 @@ async function onSearch(e) {
         return;
     }
 
+    let searchRes = null;
+
     try {
-        const response = await apiServ.fetchImagesByName(queryInput.value, 1);
+        searchRes = await apiServ.fetchImagesByName(queryInput.value, 1);
     } catch (err) {
         console.log(`✖ ${err.name}: ${err.message}`);
     }
+
+    addGalleryListMarkup(searchRes.hits);
+}
+
+function addGalleryListMarkup(images) {
+    refs.galleryList.insertAdjacentHTML('beforeend', photoCardTmpl(images));
 }
