@@ -40,7 +40,12 @@ async function onSearch(e) {
 }
 
 async function onGalleryLoadClick() {
-    //
+    if (!nextSearchPage) {
+        return;
+    }
+
+    const images = await fetchNextGalleryPage();
+    addGalleryListMarkup(images);
 }
 
 async function fetchNextGalleryPage() {
@@ -49,7 +54,10 @@ async function fetchNextGalleryPage() {
         nextSearchPage,
     );
 
-    // if (result)
+    const fetchedImgCount = nextSearchPage * apiServ.PAGE_SIZE;
+    console.log(fetchedImgCount);
+    nextSearchPage =
+        fetchedImgCount >= searchRes.totalHits ? 0 : nextSearchPage + 1;
 
     return searchRes.hits;
 }
