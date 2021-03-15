@@ -15,18 +15,19 @@
         <section class="gallery">
             <div class="container">
                 <form class="search-form" id="search-form">
-                    <label
-                        >Название изображения:
+                    <label class="search-input-label"
+                        >Поиск изображений:
                         <input
+                            class="search-input"
                             type="text"
                             name="query"
                             autocomplete="off"
-                            placeholder="Search images..."
+                            placeholder="Название..."
                         />
                     </label>
                     <button type="submit">Найти</button>
                 </form>
-                <ul class="gallery-list" id="gallery-list">
+                <ul class="gallery-list list" id="gallery-list">
                     <!-- Список <li> с карточками изображений -->
                 </ul>
                 <button class="gallery-load" id="gallery-load">
