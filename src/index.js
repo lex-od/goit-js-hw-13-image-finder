@@ -35,6 +35,7 @@ async function onGalleryLoadClick() {
         const hits = await API.getNextPageHits();
 
         addGalleryListMarkup(hits);
+        scrollToLastAdded(hits.length);
     } catch (err) {
         apiErrorHandler(err);
     }
@@ -52,4 +53,21 @@ function apiErrorHandler(err) {
     console.log(`✖ ${err.name}: ${err.message}`);
 
     clearGalleryList();
+}
+
+function scrollToLastAdded(addedCount) {
+    if (addedCount < 1) {
+        return;
+    }
+
+    const collection = refs.galleryList.children;
+    const itemToScrollRef = collection[collection.length - addedCount];
+
+    const itemTopAbs =
+        itemToScrollRef.getBoundingClientRect().top + pageYOffset;
+
+    setTimeout(
+        () => window.scrollTo({ top: itemTopAbs, behavior: 'smooth' }),
+        800,
+    );
 }
