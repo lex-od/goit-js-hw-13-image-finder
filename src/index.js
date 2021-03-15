@@ -1,6 +1,6 @@
 import './styles.scss';
 import photoCardTmpl from './data/photoCard.hbs';
-import apiServ from './js/apiService';
+import API from './js/apiService';
 
 const refs = {
     searchForm: document.querySelector('#search-form'),
@@ -11,61 +11,45 @@ const refs = {
 refs.searchForm.addEventListener('submit', onSearch);
 refs.galleryLoad.addEventListener('click', onGalleryLoadClick);
 
-let lastSearchQuery = '';
-let nextSearchPage = 0;
-
 async function onSearch(e) {
     e.preventDefault();
 
-    lastSearchQuery = e.currentTarget.elements.query.value;
-
-    if (!lastSearchQuery) {
-        nextSearchPage = 0;
-        clearGalleryList();
-        return;
-    }
-
-    nextSearchPage = 1;
+    const query = e.currentTarget.elements.query.value;
 
     try {
-        const images = await fetchNextGalleryPage();
+        const hits = await API.getFirstPageHits(query);
 
         clearGalleryList();
-        addGalleryListMarkup(images);
+        addGalleryListMarkup(hits);
     } catch (err) {
-        console.log(`✖ ${err.name}: ${err.message}`);
-
-        clearGalleryList();
+        apiErrorHandler(err);
     }
 }
 
 async function onGalleryLoadClick() {
-    if (!nextSearchPage) {
+    if (API.isLastPage) {
         return;
     }
 
-    const images = await fetchNextGalleryPage();
-    addGalleryListMarkup(images);
+    try {
+        const hits = await API.getNextPageHits();
+
+        addGalleryListMarkup(hits);
+    } catch (err) {
+        apiErrorHandler(err);
+    }
 }
 
-async function fetchNextGalleryPage() {
-    const searchRes = await apiServ.fetchImagesByName(
-        lastSearchQuery,
-        nextSearchPage,
-    );
-
-    const fetchedImgCount = nextSearchPage * apiServ.PAGE_SIZE;
-    console.log(fetchedImgCount);
-    nextSearchPage =
-        fetchedImgCount >= searchRes.totalHits ? 0 : nextSearchPage + 1;
-
-    return searchRes.hits;
-}
-
-function addGalleryListMarkup(images) {
-    refs.galleryList.insertAdjacentHTML('beforeend', photoCardTmpl(images));
+function addGalleryListMarkup(hits) {
+    refs.galleryList.insertAdjacentHTML('beforeend', photoCardTmpl(hits));
 }
 
 function clearGalleryList() {
     refs.galleryList.innerHTML = '';
+}
+
+function apiErrorHandler(err) {
+    console.log(`✖ ${err.name}: ${err.message}`);
+
+    clearGalleryList();
 }
