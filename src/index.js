@@ -1,6 +1,12 @@
+import { notice as pnNotice, defaults as pnDefaults } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
+
 import './styles.scss';
 import photoCardTmpl from './data/photoCard.hbs';
 import API from './js/apiService';
+
+pnDefaults.delay = 3000;
 
 const refs = {
     searchForm: document.querySelector('#search-form'),
@@ -19,6 +25,10 @@ async function onSearch(e) {
     try {
         const hits = await API.getFirstPageHits(query);
 
+        if (!hits.length) {
+            notifyUser('no-results');
+        }
+
         clearGalleryList();
         addGalleryListMarkup(hits);
     } catch (err) {
@@ -28,6 +38,7 @@ async function onSearch(e) {
 
 async function onGalleryLoadClick() {
     if (API.isLastPage) {
+        notifyUser('last-page');
         return;
     }
 
@@ -70,4 +81,21 @@ function scrollToLastAdded(addedCount) {
         () => window.scrollTo({ top: itemTopAbs, behavior: 'smooth' }),
         800,
     );
+}
+
+function notifyUser(type) {
+    let message = '';
+
+    switch (type) {
+        case 'no-results':
+            message = 'К сожалению, по вашему запросу ничего не найдено!';
+            break;
+        case 'last-page':
+            message = 'Просмотрены все результаты по вашему запросу!';
+            break;
+    }
+
+    if (message) {
+        pnNotice(message);
+    }
 }
