@@ -25,8 +25,9 @@ img {
 
 body {
     margin: 0;
+    min-height: 100vh;
 
-    // background-color: rgb(182, 224, 182);
+    background-image: linear-gradient(to right bottom, #c8e0e7, #80c6ee);
 
     font-family: sans-serif;
 }
@@ -36,15 +37,26 @@ body {
 }
 
 .search-form {
+    display: flex;
+    align-items: center;
     margin-bottom: 30px;
 }
 
 .search-input-label {
     margin-right: 30px;
+
+    font-size: 24px;
 }
 
 .search-input {
-    width: 250px;
+    width: 400px;
+    margin-left: 15px;
+    padding: 5px 10px;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 24px;
 }
 
 .gallery-list {
@@ -62,5 +74,39 @@ body {
     display: flex;
     justify-content: space-evenly;
 
-    color: gray;
+    background-color: #dcf0ff;
+    border-radius: 0 0 5px 5px;
+
+    color: #1995dd;
+}
+
+.stats-item {
+    display: flex;
+    align-items: center;
+
+    > i {
+        margin-right: 3px;
+    }
+}
+
+.button {
+    padding: 10px 20px;
+    min-width: 150px;
+
+    border: none;
+    border-radius: 5px;
+    background-color: #28a2e9;
+    cursor: pointer;
+
+    color: #fff;
+    font-size: 16px;
+
+    &:hover,
+    &:focus {
+        background-color: #1995dd;
+    }
+}
+
+.button.load-func {
+    margin-top: 30px;
 }
