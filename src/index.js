@@ -1,6 +1,8 @@
 import { notice as pnNotice, defaults as pnDefaults } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
+import 'basiclightbox/dist/basicLightbox.min.css';
+import * as basicLightbox from 'basiclightbox';
 
 import './styles.scss';
 import photoCardTmpl from './data/photoCard.hbs';
@@ -16,6 +18,7 @@ const refs = {
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.galleryLoad.addEventListener('click', onGalleryLoadClick);
+refs.galleryList.addEventListener('click', onGalleryListClick);
 
 async function onSearch(e) {
     e.preventDefault();
@@ -91,11 +94,19 @@ function notifyUser(type) {
             message = 'К сожалению, по вашему запросу ничего не найдено!';
             break;
         case 'last-page':
-            message = 'Просмотрены все результаты по вашему запросу!';
+            message = 'По текущему запросу больше нет результатов!';
             break;
     }
 
     if (message) {
         pnNotice(message);
     }
+}
+
+function onGalleryListClick(e) {
+    if (!e.target.classList.contains('photo-card-image')) {
+        return;
+    }
+
+    basicLightbox.create(`<img src="${e.target.dataset.url}">`).show();
 }

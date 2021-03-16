@@ -70,6 +70,10 @@ body {
     margin: 15px;
 }
 
+.photo-card-image {
+    cursor: pointer;
+}
+
 .stats {
     display: flex;
     justify-content: space-evenly;
