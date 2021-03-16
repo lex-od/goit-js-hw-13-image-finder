@@ -28,28 +28,25 @@ async function onSearch(e) {
     try {
         const hits = await API.getFirstPageHits(query);
 
-        if (!hits.length) {
-            notifyUser('no-results');
-        }
-
         clearGalleryList();
         addGalleryListMarkup(hits);
+
+        hits.length || notifyUser('no-results');
+        refs.galleryLoad.hidden = API.isLastPage;
     } catch (err) {
         apiErrorHandler(err);
     }
 }
 
 async function onGalleryLoadClick() {
-    if (API.isLastPage) {
-        notifyUser('last-page');
-        return;
-    }
-
     try {
         const hits = await API.getNextPageHits();
 
         addGalleryListMarkup(hits);
         scrollToLastAdded(hits.length);
+
+        refs.galleryLoad.hidden = API.isLastPage;
+        API.isLastPage && notifyUser('last-page');
     } catch (err) {
         apiErrorHandler(err);
     }
@@ -67,6 +64,7 @@ function apiErrorHandler(err) {
     console.log(`✖ ${err.name}: ${err.message}`);
 
     clearGalleryList();
+    refs.galleryLoad.hidden = true;
 }
 
 function scrollToLastAdded(addedCount) {
@@ -94,7 +92,7 @@ function notifyUser(type) {
             message = 'К сожалению, по вашему запросу ничего не найдено!';
             break;
         case 'last-page':
-            message = 'По текущему запросу больше нет результатов!';
+            message = 'Достигнут конец галереи!';
             break;
     }
 
